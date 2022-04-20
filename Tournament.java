@@ -26,7 +26,7 @@ public class Tournament {
 			addToSortArr();
 		} catch (IOException e) {
 			// Initialize default players
-			System.err.printf("New file has been created at %s", Paths.get(FILE_NAME).toAbsolutePath().toString());
+			System.err.printf("New file has been created at %s\n", Paths.get(FILE_NAME).toAbsolutePath().toString());
 			System.out.println("\n\n");
 			ar[0] = new Player("Artium The Great", 10000);
 			ar[1] = new Player("Itamar The Great", 11000);
@@ -219,7 +219,7 @@ public class Tournament {
 	 */
 	public static void clearTournamentData() {
 		try {
-			new ObjectOutputStream(Files.newOutputStream(Paths.get(FILE_NAME), StandardOpenOption.TRUNCATE_EXISTING))
+			new ObjectOutputStream(Files.newOutputStream(Paths.get(FILE_NAME)))
 					.close();
 		} catch (IOException e) {
 			e.printStackTrace();
