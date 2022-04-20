@@ -15,8 +15,8 @@ public class TennisDriver {
 			Tournament.clearTournamentData();
 		}
 
-		for (int i = 0; i < 5; i++) {
-			Tournament t = new Tournament(tournamentNames[i]);
+		for (String tournamentName : tournamentNames) {
+			Tournament t = new Tournament(tournamentName);
 			t.simulateTournament();
 		}
 	}

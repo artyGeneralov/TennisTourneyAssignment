@@ -22,8 +22,8 @@ public class Tournament {
 		ar = new Player[NUMBER_OF_PLAYERS];
 		this.name = name;
 		try {
-			openInStream();
 			readPlayersFromFile();
+			addToSortArr();
 		} catch (IOException e) {
 			// Initialize default players
 			ar[0] = new Player("Artium The Great", 10000);
@@ -86,11 +86,11 @@ public class Tournament {
 				// Loser to file:
 				if (winner.getName().equals(player1.getName())) {
 					// player2 lost, update his score, add him to file
-					player2.updateTotalScore();
+					player1.updateTotalScore();
 					addPlayerToFile(player2);
 				} else {
 					// player1 lost, update his score, add him to file.
-					player1.updateTotalScore();
+					player2.updateTotalScore();
 					addPlayerToFile(player1);
 				}
 
@@ -105,6 +105,13 @@ public class Tournament {
 			}
 		}
 		closeOutputStream();
+		try {
+			readPlayersFromFile();
+			addToSortArr();
+			playerList.print();
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/*
@@ -125,21 +132,13 @@ public class Tournament {
 		} else {
 			// player2 win
 			p2.updateGameWin();
-			gameMessage += String.format("winner - %s", p1.getName());
+			gameMessage += String.format("winner - %s", p2.getName());
 			System.out.println(gameMessage);
 			return p2;
 		}
 	}
 
 	/* File Handling */
-
-	private void openInStream() throws IOException {
-		try {
-			playerIn = new ObjectInputStream(Files.newInputStream(Paths.get(FILE_NAME)));
-		} catch (IOException e) {
-			throw new IOException();
-		}
-	}
 
 	private void openOutStream() {
 		try {
@@ -150,27 +149,48 @@ public class Tournament {
 	}
 
 	private void readPlayersFromFile() throws IOException {
-		for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
-			try {
-				ar[i] = (Player) playerIn.readObject();
-			} catch (EOFException eof) {
-				System.err.println("Bad File, not enough players.");
-				throw new IOException(); // This happens when trying to read from an empty file
-			} catch (ClassNotFoundException cnf) {
-				System.err.println("Invalid object.");
-				break;
-			}
-		}
 
-		// Close input stream after fetching the list
-		if (playerIn != null) {
-			try {
-				playerIn.close();
-			} catch (IOException e) {
-				e.printStackTrace();
+		// Open file
+		try {
+			playerIn = new ObjectInputStream(Files.newInputStream(Paths.get(FILE_NAME)));
+			boolean reading = true;
+			int i = 0;
+			// Fetch data
+			while (reading && i < NUMBER_OF_PLAYERS) {
+				Player player = null;
+				try {
+					player = (Player) playerIn.readObject();
+				}catch(EOFException eof) {
+					System.err.println("File empty");
+					throw new IOException();
+				}
+				catch (ClassNotFoundException cnf) {
+					System.err.println("No player class found");
+				} catch (IOException e) {
+					e.printStackTrace();
+					throw new IOException();
+				}
+				if (player != null)
+					ar[i++] = player;
+				else
+					reading = false;
+			}
+
+		} catch (IOException e) {
+			System.err.println("File not found");
+			throw new IOException();
+		} finally {
+			// Close file
+			if (playerIn != null) {
+				try {
+					playerIn.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
+	
 
 	private void addPlayerToFile(Player player) {
 		if (playerOut != null) {

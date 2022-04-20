@@ -52,6 +52,7 @@ public class Player implements Serializable {
 	
 	public void updateTotalScore() {
 		this.totalScore += this.tournamentScore;
+		this.tournamentScore = 0;
 	}
 	
 

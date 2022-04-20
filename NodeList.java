@@ -48,7 +48,7 @@ public class NodeList<T> {
 	public void print() {
 		Node<T> temp = firstNode;
 		int counter = 1;
-		while (temp.getNext() != null) {
+		while (temp != null) {
 			System.out.printf("%d.) %s\n", counter, temp);
 			temp = temp.getNext();
 			counter++;
