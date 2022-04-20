@@ -26,6 +26,8 @@ public class Tournament {
 			addToSortArr();
 		} catch (IOException e) {
 			// Initialize default players
+			System.err.printf("New file has been created at %s", Paths.get(FILE_NAME).toAbsolutePath().toString());
+			System.out.println("\n\n");
 			ar[0] = new Player("Artium The Great", 10000);
 			ar[1] = new Player("Itamar The Great", 11000);
 			ar[2] = new Player("Roey The Great", 9000);
@@ -161,7 +163,6 @@ public class Tournament {
 				try {
 					player = (Player) playerIn.readObject();
 				}catch(EOFException eof) {
-					System.err.println("File empty");
 					throw new IOException();
 				}
 				catch (ClassNotFoundException cnf) {
@@ -177,7 +178,6 @@ public class Tournament {
 			}
 
 		} catch (IOException e) {
-			System.err.println("File not found");
 			throw new IOException();
 		} finally {
 			// Close file
